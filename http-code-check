@@ -1,9 +1,12 @@
 # 웹사이트 서버 상태 확인하여 딕셔너리로 출력하는 프로그램
 
 import requests
-# request 예시: 내 브라우저는 google 서버에 request를 보내고 google 서버는 나한테 웹사이트를 보내준다.
 from requests import get
-# get: webstie를 가져오는 기능
+"""
+- pypi에서 requests 패키지 설치
+- request 예시: 내 브라우저는 google 서버에 request를 보내고 google 서버는 나한테 웹사이트를 보내준다.
+- get: webstie를 가져오는 기능
+"""
 
 websites=(
 "google.com",
@@ -13,6 +16,7 @@ websites=(
 "https://tiktok.com"
 )
 #코드는 http 또는 https에 ://를 붙인 웹사이트로 주소로만 이동이 가능하다.
+
 results=dict()
 
 for website in websites:
@@ -27,12 +31,19 @@ for website in websites:
   (HTTP code mdn 검색)
   """
 
-  if response.status_code==200:
-    results[website]='OK'
-  elif response.status_code==307 or 308:
+
+  #상태 코드에 따른 경우의 수
+  if response.status_code>=100 and response.status_code<200:
+    results[website]='INFORMATION'
+  elif response.status_code>=200 and response.status_code<300:
+    results[website]='SUCCESS'
+  elif response.status_code>=300 and response.status_code<400:
     results[website]='RE-DIRECTION'
+  elif response.status_code>=400 and response.status_code<500:
+    results[website]='CLIENT-ERROR'
+  elif response.status_code>=500 and response.status_code<600:
+    results[website]='SERVER-ERROR'
   else:
-    results[website]='FAIL'
-  #TO DO: 상태 코드에 따라 경우의수 추가
+    results[website]='UNKNOWN-ERROR'
 
 print(results)
